@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-first-deployment
+
+spec:
+  selector:
+    matchLabels:
+      name: my-app-1
+  template:
+    metadata:
+      labels:
+        name: my-app-1 # This label is pod
+    spec:
+      containers:
+        - name: my-app-1
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
