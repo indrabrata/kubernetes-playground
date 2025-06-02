@@ -2,19 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-first-deployment
+  labels: # Labels to identify the Deployment
+    app: my-app-1
+    version: v1
 
-spec:
-  selector:
+spec: # Deployment spec
+  replicas: 2
+  selector: # Selector to match Pods (using key-value pairs), selector is used to find which Pods are managed by this Deployment
     matchLabels:
       name: my-app-1
-  template:
+  template: # Pod template -> has it own spec and metadata
     metadata:
       labels:
-        name: my-app-1 # This label is pod
-    spec:
+        name: my-app-1 # Labels to identify Pods
+    spec: # Pod spec
       containers:
         - name: my-app-1
-          image: nginx:latest
+          image: nginx:1.27.5
           ports:
             - containerPort: 80
           resources:

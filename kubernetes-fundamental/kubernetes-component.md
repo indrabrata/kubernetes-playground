@@ -11,6 +11,7 @@
 - Usually we run 1 application per pod
 - Each pod get their IP address and make the pod can communicate with other pod but must be in same network
 - If pod crashed, it will got new ip address
+- To connectin pod into deployment, we need to specify the selector in deployment to match the label in pod
 
 ## Service
 
@@ -58,6 +59,8 @@
 - Deployment make us can define how many replica of pod
 - Replica connected to same service
 - We can't use deployment for replica database because database has it own state (stateful)
+- Deployment manages a repliceset, replicaset manages the pods, pods are abstraction of container
+- For connecting deployment to service, we need to specify the selector in service to match the label in deployment
 
 ## StatefulSet
 

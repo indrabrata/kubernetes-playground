@@ -27,3 +27,4 @@
   - Key value store (cluster change saved on etcd)
   - Cluster brain
   - Store cluster information to make decision about process later
+  - Store all the configuration and state of the cluster

@@ -1,0 +1,42 @@
+# Deployment uses apiVersion: apps/v1 because it is part of the "apps" API group, which manages higher-level application resources like Deployments, StatefulSets, and DaemonSets.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx-deployment-with-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-deployment-with-service
+  template:
+    metadata:
+      labels:
+        app: nginx-deployment-with-service
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27.5
+          ports:
+            - containerPort: 80 # Exposing port 80 for the nginx container
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+---
+# Service uses apiVersion: v1 because it is part of the "core" API group (sometimes called the "legacy" or "core/v1" group), which manages fundamental resources like Pods, Services, ConfigMaps, and Secrets.
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx-deployment-with-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
