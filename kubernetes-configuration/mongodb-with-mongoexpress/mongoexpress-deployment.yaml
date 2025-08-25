@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongoexpress-deployment
+  labels:
+    app: mongoexpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongoexpress
+  template:
+    metadata:
+      labels:
+        app: mongoexpress
+    spec:
+      containers:
+        - name: mongoexpress
+          image: mongo-express
+          ports:
+            - containerPort: 8081
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+          env:
+            - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-credentials
+                  key: mongo-root-username
+            - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-credentials
+                  key: mongo-root-password
+            - name: ME_CONFIG_MONGODB_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: mongoexpress-configmap
+                  key: mongodb-url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongoexpress-service
+spec:
+  selector:
+    app: mongoexpress
+  ports:
+    - protocol: TCP
+      port: 8081 # Port exposed by the service
+      targetPort: 8081 # Port on the container that the service will forward traffic to
+      nodePort: 30000 # NodePort is the port on each node that will forward traffic to the service, nodePort must be between 30000 and 32767
+  # type: ClusterIP # Expose the service on a cluster-internal IP (default type for a Service)
+  # type: NodePort # Expose the service on a port on each node in the cluster
+  type: LoadBalancer # In Kubernetes, setting type: LoadBalancer in a Service means Kubernetes will provision an external load balancer (if supported by  cloud provider) and assign a public IP address to your service.

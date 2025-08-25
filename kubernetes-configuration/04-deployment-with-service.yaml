@@ -19,7 +19,7 @@ spec:
         - name: nginx
           image: nginx:1.27.5
           ports:
-            - containerPort: 80 # Exposing port 80 for the nginx container
+            - containerPort: 8080 # Exposing port 80 for the nginx container
           resources:
             limits:
               memory: "512Mi"
@@ -38,5 +38,6 @@ spec:
     app: nginx-deployment-with-service
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 80 # Port is the port that the service will expose to the outside world
+      targetPort: 8080 # Target port is the port on the container that the service will forward traffic to
+
