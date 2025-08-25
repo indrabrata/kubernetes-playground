@@ -73,3 +73,15 @@ kubectl exec -it <pod-name> -- <command>
 ```bash
 kubectl apply -f <file-name>.yaml
 ```
+
+## Create Namespace
+
+```bash
+kubectl create namespace <namespace-name>
+```
+
+## Get Namespaces
+
+```bash
+kubectl get namespaces
+```

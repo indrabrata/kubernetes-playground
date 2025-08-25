@@ -66,3 +66,37 @@
 
 - Means application such as database for avoiding data incosistency
 - DB are often hosted outside kubernetes cluster
+
+## Namespace
+
+- We can organize the resource in kubernetes using namespace
+- Virtual cluster inside the kubernetes cluster
+- Kubernetes have 4 default namespace
+  - Default
+    - Create resource at the begining
+  - Kube-system (for kubernetes component)
+    - Master node component
+    - System process
+    - Do not create or modify anything in this namespace
+  - Kube-public (for public access)
+    - public accessible namespace
+    - A config map which contains cluster info
+  - Kube-node-lease (for node heartbeat)
+    - Improve the performance of node heartbeats
+  - Kubernetes-dashboard (for dashboard component) -> spesific in minikube
+- Benefit of using namespace
+  - Multiple environment (dev, staging, production) / blue green deployment
+  - Multiple team (team-a, team-b) -> it reduce conflict
+  - Resource quota -> we can limit cpu, memory, storage, etc in namespace using resource quota
+  - Access control -> we can give access to user in specific namespace using role based access control (RBAC)
+- if we want to access the resource in specific namespace, we can use `-n` or `--namespace` flag
+  - Example: `kubectl get pods -n <namespace-name>`
+- if we want to access component in other namespace we can use [service-name].[namespace-name]
+- We cant use namespace for :
+  - Node
+  - Persistent Volume
+  - Storage Class
+  - Cluster Role
+  - Cluster Role Binding
+
+## Ingress Controller
