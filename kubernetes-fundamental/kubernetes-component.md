@@ -100,3 +100,14 @@
   - Cluster Role Binding
 
 ## Ingress Controller
+
+- Ingress controller is a component that is used to manage ingress resource
+- Ingress controller is to evaluates the ingress rules and make the routing
+- Entrypoint for the cluster
+- Examples of ingress controller:
+  - Nginx Ingress Controller -> from k8s
+  - Traefik
+  - HAProxy
+  - Istio
+  - Contour
+  - Ambassador
