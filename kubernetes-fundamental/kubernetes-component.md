@@ -20,6 +20,26 @@
 - And that's why we can just use IP of service not the pod
 - The name of service will used for mapping the ip address
 - Act also as a load balancing, will forward request to the pod less busy of active pod
+- Good for loosely coupled application
+- Type of service:
+  - ClusterIP (default) -> 2 apps running in the same pod
+    - Only accessible inside the cluster
+    - Service will forward the request to the pod
+  - NodePort
+    - Open a specific port on each node to access the service from outside the cluster
+    - NodePort will forward the request to ClusterIP
+    - Port range 30000-32767
+  - LoadBalancer
+    - Create an external load balancer in the cloud (if supported) and assign a fixed, external IP to the service
+    - LoadBalancer will forward the request to NodePort then to ClusterIP
+  - ExternalName
+    - Map the service to the contents of the externalName field (e.g. foo.bar.example.com), by returning a CNAME record with its value.
+    - No proxying of any kind is set up.
+  - Headless Service
+    - Communicate with 1 specific pod
+    - No Cluster IP
+    - We can use headless service for statefulset
+    - We can use headless service to sync data between pod (database)
 
 ### External Service
 
@@ -111,3 +131,64 @@
   - Istio
   - Contour
   - Ambassador
+
+## Helm
+
+- Helm is a package manager for kubernetes
+- To package yaml file into helm chart -> push in helm repository -> install the helm chart into kubernetes cluster
+- Helm chart is a collection of files that describe a related set of kubernetes resources
+- HELM for cleint (helm cli)
+- HELM for server (tiller) -> running the `helm install` command in the server -> deperecated in helm v3
+- Helm chart have 2 main component:
+  - Chart.yaml -> contain the metadata of the chart
+  - values.yaml -> contain the default value of the chart
+- To install helm chart we can use `helm install <release-name> <chart-name>`
+- To upgrade helm chart we can use `helm upgrade <release-name> <chart-name>`
+- To rollback helm chart we can use `helm rollback <release-name> <revision-number>`
+- To uninstall helm chart we can use `helm uninstall <release-name>`
+
+## Storage
+
+- Storage that doesn't depend on the lifecycle of a pod
+- Storage must be available before the pod that uses it is created and available on all nodes
+- Storage needs survive even if cluster crashed
+
+## Persistent Volume (PV)
+
+- A piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes
+- Storage in kubernetes like an abstraction of physical storage or external plugin to connect to external storage
+- Accessible by all namespace
+- Volume provides the actual storage backend that is mounted into a pod, allowing containers to read and write data.
+
+## Persistent Volume Claim (PVC)
+
+- A request for storage by a user
+- Claim the storage from persistent volume
+- PVC is namespace scoped
+- container mounted to volume, volume in pod mounted to pvc, pvc claim the storage from pv
+- why so many abstraction?
+  - decouple the storage from the pod
+  - make the pod can use different storage backend without changing the pod configuration
+  - make the pod can use different storage size without changing the pod configuration
+  - make the pod can use different storage class without changing the pod configuration
+
+## Storage Class
+
+- Create provision and create volume dynamically
+- A way to describe the "classes" of storage that a cluster offers
+- Different classes might map to quality-of-service levels, or to backup policies, or to arbitrary policies determined by the cluster administrators
+- Storage class provide the dynamic provisioning of persistent volume
+- Abstract underlying storage provider
+- we add this in PVC
+- we can specify the storage class in PVC
+- If we dont specify the storage class in PVC, it will use the default storage class
+
+## StatefulSet and Volume Claim Template
+
+- Example : database
+- Make it able to replicate the database
+- We can use statefulset with volume claim template to create a pvc for each pod in statefulset
+- Each pod in statefulset will have their own pvc
+- If there are 3 pod replica statefulset, there will be 3 PV created (linked to pysical storage)
+  - That have master and slave database if we create replicate
+- The deletion of statefulset is in reverse order of creation
